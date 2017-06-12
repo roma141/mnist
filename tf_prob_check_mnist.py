@@ -16,7 +16,7 @@ print file_features, file_features2
 
 train_size = 37804
 cv_size = 4196
-learning_rate = 1e-4
+learning_rate = 1e-2
 sleeping = 5
 
 epochs = 90
