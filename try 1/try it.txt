@@ -1,0 +1,17 @@
+resp_tfrecord_conv2_chan_1
+hiden 200, lrn,
+auc: 0.998678
+accuracy: 97.71 total good int: 4100 of 4196
+acc by label: 97.7
+cost2: 0.070024327463 cost3: 0.0700243267094
+
+zero    99.27 total good int: 410 of 413
+one     98.93 total good int: 463 of 468
+two     97.36 total good int: 406 of 417
+three   96.78 total good int: 421 of 435
+four    98.28 total good int: 400 of 407
+five    97.89 total good int: 371 of 379
+six     99.27 total good int: 410 of 413
+seven   98.64 total good int: 434 of 440
+eight   95.07 total good int: 386 of 406
+nine    95.45 total good int: 399 of 418
