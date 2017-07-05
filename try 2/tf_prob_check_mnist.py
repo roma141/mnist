@@ -6,11 +6,11 @@ import scipy.io
 import numpy as np
 
 ### config
-file_features = "mnist_m12_hid-200_cs-5_chan-1_loss-0.0605_acc-98.05"
+file_features = "mnist_m1_t2_hid-600_cs-5_chan-1_loss-0.2322_acc-92.3"
 features = scipy.io.loadmat(file_features)
 # file_features2 = "mnist_m2_loss-0.94"
 # file_features2 = "mnist_m1_loss-1.34"
-file_features2 = "mnist_m13_hid-200_cs-5_chan-1_loss-0.0841_acc-97.14"
+file_features2 = "mnist_m1_hid-600_cs-5_chan-1_loss-0.0729_acc-97.47"
 features2 = scipy.io.loadmat(file_features2)
 print file_features, file_features2
 
@@ -30,7 +30,7 @@ img_height = 28
 dropout = 1.0
 cv_size = 5
 cv_channels = 1
-hidden = 200
+hidden = 600
 
 categories = 10
 

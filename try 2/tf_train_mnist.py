@@ -21,10 +21,10 @@ img_height = 28
 dropout = 1.0
 cv_size = 5
 cv_channels = 1
-hidden = 200
+hidden = 600
 
 categories = 10
-stamp = "mnist_m13_hid-"+str(hidden)+"_cs-"+str(cv_size)+"_chan-"+str(cv_channels)
+stamp = "mnist_m1_t2_hid-"+str(hidden)+"_cs-"+str(cv_size)+"_chan-"+str(cv_channels)
 
 print stamp
 print "rounds:",rounds, "batch_size:", batch_size ,"dropout:", dropout
@@ -87,7 +87,8 @@ h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2)
 h_lrn2 = tf.nn.lrn(h_conv2)
 h_pool2 = max_pool_2x2(h_lrn2)
 
-h_pool_flat = tf.reshape(h_pool2, [-1, img_width/4 * img_height/4  * cv_channels * 2])
+h_pool3 = aver_pool_7x7(h_pool2, 1) ### t2 model
+h_pool_flat = tf.reshape(h_pool3, [-1, img_width/4 * img_height/4  * cv_channels * 2])
 
 h_fc1 = tf.nn.relu(tf.matmul(h_pool_flat, W_fc1) + b_fc1)
 h_fc1_drop = tf.nn.dropout(h_fc1, dropout)
@@ -115,7 +116,8 @@ h_conv2_cv = tf.nn.relu(conv2d(h_pool1_cv, W_conv2) + b_conv2)
 h_lrn2_cv = tf.nn.lrn(h_conv2_cv)
 h_pool2_cv = max_pool_2x2(h_lrn2_cv)
 
-h_pool_flat_cv = tf.reshape(h_pool2_cv, [-1, img_width/4 * img_height/4  * cv_channels * 2])
+h_pool3_cv = aver_pool_7x7(h_pool2_cv, 1) ### t2 model
+h_pool_flat_cv = tf.reshape(h_pool3_cv, [-1, img_width/4 * img_height/4  * cv_channels * 2])
 
 h_fc1_cv = tf.nn.relu(tf.matmul(h_pool_flat_cv, W_fc1) + b_fc1)
 pred_cv_2 = tf.nn.softmax(tf.matmul(h_fc1_cv, W_fc2) + b_fc2)

@@ -23,3 +23,6 @@ def lrn(x):
 
 def aver_pool(x, n):
 	return tf.nn.avg_pool(x, ksize=[1, n, n, 1], strides=[1, 1, 1, 1], padding='SAME')
+
+def aver_pool_7x7(x, s):
+    return tf.nn.avg_pool(x, ksize=[1, 7, 7, 1], strides=[1, s, s, 1], padding='SAME')
