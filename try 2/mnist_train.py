@@ -115,4 +115,5 @@ scipy.io.savemat("pytorch/" + name_file, data, do_compression=True)
 
 # torch.save("pytorch/" + name_file, model.state_dict() [, format, referenced])
 # torch.save(model.state_dict(), "pytorch/" + name_file +".dat")
+print ("starting test 2")
 print ("end")
