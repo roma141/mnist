@@ -6,13 +6,15 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.autograd import Variable
 import scipy.io
+import pandas as pd
+import numpy as np
 
 # Training settings
 
 torch.manual_seed(1)
 batch = 64
 test_batch = 1000
-epochs = 1
+epochs = 10
 log_interval = 1
 
 kwargs = {}
@@ -21,16 +23,16 @@ train_loader = torch.utils.data.DataLoader(
     datasets.MNIST('../data', train=True, download=True,
                    transform=transforms.Compose([
                        transforms.ToTensor(),
-                       # transforms.Normalize((0.1307,), (0.3081,))
-                       transforms.Normalize((0.5,), (0.5,))
+                       transforms.Normalize((0.1307,), (0.3081,))
+                       # transforms.Normalize((0.5,), (0.5,))
                    ])),
     batch_size = batch, shuffle=True, **kwargs)
 
 test_loader = torch.utils.data.DataLoader(
     datasets.MNIST('../data', train=False, transform=transforms.Compose([
                        transforms.ToTensor(),
-                       # transforms.Normalize((0.1307,), (0.3081,))
-                       transforms.Normalize((0.5,), (0.5,))
+                       transforms.Normalize((0.1307,), (0.3081,))
+                       # transforms.Normalize((0.5,), (0.5,))
                    ])),
     batch_size = test_batch, shuffle=True, **kwargs)
 
@@ -83,6 +85,8 @@ def test(epoch):
     test_loss = 0
     correct = 0
     for data, target in test_loader:
+        # print(data.size(), target.size())
+        # print(data.type(), target.type())
         data, target = Variable(data, volatile=True), Variable(target)
         output = model(data)
         test_loss += F.nll_loss(output, target).data[0]
@@ -103,17 +107,87 @@ f_loss, f_acc = test(epoch)
 
 # print(model.state_dict())
 
-print("saving mat file")
-name_file = "pytorch_loss-" + str(round(f_loss,4))+ "_acc-" + str(round(f_acc,2))
-data = {}
-# f_data = model.state_dict()
-# print (data)
-for key in model.state_dict().keys():
-    data[key] = model.state_dict()[key].numpy()
-# print (data)
-scipy.io.savemat("pytorch/" + name_file, data, do_compression=True)
+# print("saving mat file")
+# name_file = "pytorch_loss-" + str(round(f_loss,4))+ "_acc-" + str(round(f_acc,2))
+# data = {}
+# # f_data = model.state_dict()
+# # print (data)
+# for key in model.state_dict().keys():
+#     data[key] = model.state_dict()[key].numpy()
+# # print (data)
+# scipy.io.savemat("pytorch/" + name_file, data, do_compression=True)
 
 # torch.save("pytorch/" + name_file, model.state_dict() [, format, referenced])
 # torch.save(model.state_dict(), "pytorch/" + name_file +".dat")
-print ("starting test 2")
+# print ("starting test 2")
+
+class mnist_load(torch.utils.data.Dataset):
+    """Face Landmarks dataset."""
+
+    def __init__(self, csv_file, transform=None):
+        """
+        Args:
+            csv_file (string): Path to the csv file with annotations.
+            root_dir (string): Directory with all the images.
+            transform (callable, optional): Optional transform to be applied
+                on a sample.
+        """
+        self.data_frame = pd.read_csv(csv_file)
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.data_frame)
+
+    def __getitem__(self, idx):
+        label = self.data_frame.ix[idx, :10].as_matrix().astype('float32')
+        label = np.argmax(label)
+        image = self.data_frame.ix[idx, 10:].as_matrix().astype('float32')
+        image = image.reshape((28,28,1)).transpose((2, 0, 1))
+        sample = [image, label]
+
+        if self.transform:
+            image, label = self.transform(sample)
+
+        return image, label
+
+class ToTensor(object):
+    """Convert ndarrays in sample to Tensors."""
+
+    def __call__(self, sample):
+        image, label = sample
+
+        # swap color axis because
+        # numpy image: H x W x C
+        # torch image: C X H X W
+        # image = image.reshape((28,28,1)).transpose((2, 0, 1))
+        # image = image.transpose((0, 1))
+        image = torch.from_numpy(image)
+        # return image.type(torch.FloatTensor), label
+        return image, label
+
+file_name = 'train-tr.csv'
+test_loader = torch.utils.data.DataLoader(
+    mnist_load(file_name, transform=transforms.Compose([
+                       ToTensor(),
+                       # transforms.ToTensor(),
+                       transforms.Normalize((0.1307,), (0.3081,))
+                   ])),
+    batch_size = test_batch, shuffle=True, **kwargs)
+
+print()
+print(file_name)
+test(epoch)
+
+file_name = 'train-cv.csv'
+test_loader = torch.utils.data.DataLoader(
+    mnist_load(file_name, transform=transforms.Compose([
+                       ToTensor(),
+                       # transforms.ToTensor(),
+                       transforms.Normalize((0.1307,), (0.3081,))
+                   ])),
+    batch_size = test_batch, shuffle=True, **kwargs)
+
+print(file_name)
+test(epoch)
+
 print ("end")
