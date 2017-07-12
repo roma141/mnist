@@ -11,10 +11,10 @@ import numpy as np
 
 # Training settings
 
-torch.manual_seed(1)
+# torch.manual_seed(1)
 batch = 64
 test_batch = 1000
-epochs = 10
+epochs = 100
 log_interval = 1
 
 kwargs = {}
@@ -101,8 +101,24 @@ def test(epoch):
     return (test_loss, 100. * correct / len(test_loader.dataset))
 
 print("training...")
+best_low_loss = 100000
+conti = 0
 for epoch in range(1, epochs + 1):
     train(epoch)
+    f_loss, f_acc = test(epoch)
+    if f_loss < best_low_loss:
+        best_low_loss = f_loss
+        conti = 0
+        temp_dict = model.state_dict()
+        # name_file = "pytorch_loss-" + str(round(f_loss,4))+ "_acc-" + str(round(f_acc,2))
+        # torch.save(model.state_dict(), "pytorch/" + name_file +".dat")
+        continue
+    else:
+        if conti < 5:
+            conti += 1
+        else:
+            break
+model.load_state_dict(temp_dict)
 f_loss, f_acc = test(epoch)
 
 # print(model.state_dict())
@@ -190,4 +206,79 @@ test_loader = torch.utils.data.DataLoader(
 print(file_name)
 test(epoch)
 
+class mnist_summ_load(torch.utils.data.Dataset):
+    """Face Landmarks dataset."""
+
+    def __init__(self, csv_file, transform=None):
+        """
+        Args:
+            csv_file (string): Path to the csv file with annotations.
+            root_dir (string): Directory with all the images.
+            transform (callable, optional): Optional transform to be applied
+                on a sample.
+        """
+        self.data_frame = pd.read_csv(csv_file)
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.data_frame)
+
+    def __getitem__(self, idx):
+        image = self.data_frame.ix[idx, :].as_matrix().astype('float32')
+        image = image.reshape((28,28,1)).transpose((2, 0, 1))
+        sample = image
+
+        if self.transform:
+            image = self.transform(sample)
+
+        return image
+
+class ToTensor(object):
+    """Convert ndarrays in sample to Tensors."""
+
+    def __call__(self, sample):
+        image = sample
+
+        # swap color axis because
+        # numpy image: H x W x C
+        # torch image: C X H X W
+        # image = image.reshape((28,28,1)).transpose((2, 0, 1))
+        # image = image.transpose((0, 1))
+        image = torch.from_numpy(image)
+        return image
+
+file_name = 'test.csv'
+summision_loader = torch.utils.data.DataLoader(
+    mnist_summ_load(file_name, transform=transforms.Compose([
+                       ToTensor(),
+                       # transforms.ToTensor(),
+                       transforms.Normalize((0.1307,), (0.3081,))
+                   ])),
+    batch_size = test_batch, shuffle=False, **kwargs)
+
+def summision():
+    model.eval()
+    for data in summision_loader:
+        # print(data.size(), target.size())
+        # print(data.type(), target.type())
+        data = Variable(data, volatile=True)
+        output = model(data)
+        # print(output)
+        pred = output.data.max(1)[1]
+        if 'summision' in locals():
+            summision = np.concatenate((summision,pred.numpy()))
+            # print("concatenate more")
+        else:
+            summision = pred.numpy()
+    return summision
+
+
+summ = summision()
+
+print(summ.shape)
+file_summ = pd.DataFrame(data=summ)
+# file_summ.columns = ['ImageId','Label']
+file_summ.index += 1
+# print(file_summ)
+file_summ.to_csv('summision_mnist_pytorch.csv',index=True,index_label=['ImageId'],header=['Label'])
 print ("end")

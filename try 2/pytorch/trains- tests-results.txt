@@ -1,0 +1,45 @@
+epoch = 20
+Test set: Average loss: 0.0390, Accuracy: 9862/10000 (98.62%)
+
+train-tr.csv
+Test set: Average loss: 8.5659, Accuracy: 37118/37803 (98.19%)
+
+train-cv.csv
+Test set: Average loss: 8.5588, Accuracy: 4110/4195 (97.97%)
+________________________________________________________________
+epoch = 30
+Test set: Average loss: 0.0339, Accuracy: 9888/10000 (98.88%)
+
+train-tr.csv
+Test set: Average loss: 7.3885, Accuracy: 37183/37803 (98.36%)
+
+train-cv.csv
+Test set: Average loss: 6.2231, Accuracy: 4122/4195 (98.26%)
+__________________________________________________________________
+epoch = 50
+Test set: Average loss: 0.0308, Accuracy: 9901/10000 (99.01%)
+
+train-tr.csv
+Test set: Average loss: 5.7456, Accuracy: 37276/37803 (98.61%)
+
+train-cv.csv
+Test set: Average loss: 5.9221, Accuracy: 4131/4195 (98.47%)
+
+__________________________________________________________________
+epoch = 80
+Test set: Average loss: 0.0276, Accuracy: 9906/10000 (99.06%)
+
+train-tr.csv
+Test set: Average loss: 5.5497, Accuracy: 37306/37803 (98.69%)
+
+train-cv.csv
+Test set: Average loss: 6.6448, Accuracy: 4137/4195 (98.62%)
+__________________________________________________________________
+epoch = 200
+Test set: Average loss: 0.0320, Accuracy: 9905/10000 (99.05%)
+
+train-tr.csv
+Test set: Average loss: 5.4455, Accuracy: 37265/37803 (98.58%)
+
+train-cv.csv
+Test set: Average loss: 5.2778, Accuracy: 4137/4195 (98.62%)
