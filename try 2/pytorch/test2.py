@@ -105,24 +105,24 @@ for i_batch, sample_batched in enumerate(dataloader):
     # observe 4th batch and stop.
     if i_batch == 3:
         print ("batch_size:", len(sample_batched))
-        # plt.figure()
-        # plt.title('Batch from dataloader')
+        plt.figure()
+        plt.title('Batch from dataloader')
         # show_landmarks_batch(sample_batched)
-        # grid = utils.make_grid(sample_batched['image'])
-        # plt.imshow(grid.numpy().transpose((1, 0)))
-        # for i, img in enumerate(sample_batched['image']):
-        #     ax = plt.subplot(1, 4, i + 1)
-        #     plt.tight_layout()
-        #     ax.set_title('Sample #{}'.format(i))
-        #     ax.axis('off')
-        #     plt.gray()
-        #     # print(img)
-        #     img = img.numpy()
-        #     plt.imshow(img)
+        grid = utils.make_grid(sample_batched['image'])
+        plt.imshow(grid.numpy().transpose((1, 0)))
+        for i, img in enumerate(sample_batched['image']):
+            ax = plt.subplot(1, 4, i + 1)
+            plt.tight_layout()
+            ax.set_title('Sample #{}'.format(i))
+            ax.axis('off')
+            plt.gray()
+            # print(img)
+            img = img.numpy()
+            plt.imshow(img)
 
-        # plt.axis('off')
-        # plt.ioff()
-        # plt.show()
+        plt.axis('off')
+        plt.ioff()
+        plt.show()
         break
 
 other_data = datasets.MNIST('../../data', train=True, download=True,
